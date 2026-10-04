@@ -5,7 +5,7 @@ import { Button, Card, Chip, Divider, Input, Modal, Text, Toggle } from '../comp
 import { CATEGORIES, DURATION_OPTIONS } from '../data/exercises';
 import { useAppStore } from '../hooks/useAppStore';
 import { parseImportedData } from '../storage';
-import { fonts, useTheme } from '../theme';
+import { fonts, light, useTheme } from '../theme';
 import { AppData, Appearance, PreferredTime, UserPreferences } from '../types';
 
 type NumberPreference = 'dailyGoal' | 'weeklyGoal' | 'defaultDuration' | 'defaultRounds';
@@ -113,7 +113,7 @@ export function SettingsScreen({ onPersonalize, onToast }: { onPersonalize: () =
 
   return <View style={{ gap: 25 }}>
     <View>
-      <Text variant="caption" style={{ color: colors.sage, marginBottom: 9 }}>MADE FOR YOU</Text>
+      <Text variant="caption" style={{ color: isDark ? colors.sage : colors.primary, marginBottom: 9 }}>MADE FOR YOU</Text>
       <Text variant="display" style={{ fontSize: width < 760 ? 34 : 42, lineHeight: width < 760 ? 43 : 53 }}>Your space, your way.</Text>
       <Text muted style={{ marginTop: 8 }}>Small adjustments for a practice that feels like you.</Text>
     </View>
@@ -150,8 +150,8 @@ export function SettingsScreen({ onPersonalize, onToast }: { onPersonalize: () =
           {Platform.OS !== 'web' && <><Divider /><Toggle label="Gentle haptics" description="Feel a subtle cue when each breathing phase begins." value={p.haptics} onChange={haptics => updatePreferences({ haptics })} /></>}
         </Card>
 
-        <Card style={{ backgroundColor: colors.cream, borderColor: isDark ? colors.line : '#EDE7D9' }}>
-          <View style={{ flexDirection: 'row', gap: 11, alignItems: 'center', marginBottom: 10 }}><Heart size={17} color={colors.sage} /><Text variant="label">A little kindness goes a long way.</Text></View>
+        <Card style={{ backgroundColor: isDark ? colors.cream : colors.lilacLight, borderColor: isDark ? colors.line : colors.lilacLine }}>
+          <View style={{ flexDirection: 'row', gap: 11, alignItems: 'center', marginBottom: 10 }}><Heart size={17} color={isDark ? colors.sage : colors.primary} /><Text variant="label">A little kindness goes a long way.</Text></View>
           <Text variant="small" muted style={{ lineHeight: 21 }}>Your goals are here to make room for you. Adjust them whenever life asks you to slow down.</Text>
         </Card>
       </View>
@@ -243,12 +243,12 @@ function ActionRow({ icon: Icon, label, description, onPress, danger = false, di
 function AppearanceTile({ mode, selected, onPress }: { mode: Appearance; selected: boolean; onPress: () => void }) {
   const { colors } = useTheme();
   const Icon = mode === 'system' ? Monitor : mode === 'light' ? Sun : Moon;
-  const background = mode === 'dark' ? '#26392E' : '#F2F4EC';
+  const background = mode === 'dark' ? '#26392E' : light.surface;
   return <Pressable accessibilityRole="radio" accessibilityState={{ checked: selected }} accessibilityLabel={`${mode} appearance`} onPress={onPress} style={({ pressed }) => ({ flex: 1, padding: 7, borderRadius: 15, borderWidth: 1.5, borderColor: selected ? colors.primary : colors.line, backgroundColor: selected ? colors.primaryLight : colors.surface, opacity: pressed ? .7 : 1 })}>
     <View style={{ backgroundColor: background, borderRadius: 8, height: 68, overflow: 'hidden', padding: 10 }}>
       {mode === 'system' && <View style={{ position: 'absolute', top: 0, bottom: 0, right: 0, width: '50%', backgroundColor: '#26392E' }} />}
-      <View style={{ width: '65%', height: 4, borderRadius: 3, backgroundColor: mode === 'dark' ? '#A9BC9C' : '#98AF85', marginBottom: 9 }} />
-      <View style={{ flex: 1, flexDirection: 'row', gap: 5 }}><View style={{ width: '60%', borderRadius: 4, backgroundColor: mode === 'dark' ? '#496045' : '#D4E1C9' }} /><View style={{ flex: 1, borderRadius: 4, backgroundColor: mode === 'dark' ? '#354A39' : '#E1E8D8' }} /></View>
+      <View style={{ width: '65%', height: 4, borderRadius: 3, backgroundColor: mode === 'dark' ? '#A9BC9C' : light.primary, marginBottom: 9 }} />
+      <View style={{ flex: 1, flexDirection: 'row', gap: 5 }}><View style={{ width: '60%', borderRadius: 4, backgroundColor: mode === 'dark' ? '#496045' : light.lilacLight }} /><View style={{ flex: 1, borderRadius: 4, backgroundColor: mode === 'light' ? light.pinkLight : '#354A39' }} /></View>
     </View>
     <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: 4, paddingVertical: 10 }}><Icon size={12} color={selected ? colors.primary : colors.muted} /><Text variant="small" style={{ color: selected ? colors.primary : colors.muted, fontSize: 11 }}>{mode.charAt(0).toUpperCase() + mode.slice(1)}</Text></View>
   </Pressable>;

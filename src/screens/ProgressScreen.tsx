@@ -71,10 +71,10 @@ function periodActivity(sessions: BreathingSession[], period: Period, now: Date)
 }
 
 export function DataSourceControl({ demoMode, onChange }: { demoMode: boolean; onChange: (value: boolean) => void }) {
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
   return <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 10 }}>
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 6, paddingHorizontal: 10, borderRadius: 8, backgroundColor: demoMode ? colors.cream : colors.primaryLight }}>
-      <View style={{ height: 5, width: 5, borderRadius: 3, backgroundColor: demoMode ? '#AF945E' : colors.primary }}/>
+      <View style={{ height: 5, width: 5, borderRadius: 3, backgroundColor: demoMode ? isDark ? '#AF945E' : colors.pink : colors.primary }}/>
       <Text variant="small" style={{ fontSize: 10, color: colors.ink, fontFamily: fonts.medium }}>{demoMode ? 'Example history' : 'Your activity'}</Text>
     </View>
     <Pressable accessibilityRole="button" accessibilityLabel={demoMode ? 'Show my real activity instead of example history' : 'Show example history'} onPress={() => onChange(!demoMode)} style={{ minHeight: 44, justifyContent: 'center' }}>
@@ -83,10 +83,10 @@ export function DataSourceControl({ demoMode, onChange }: { demoMode: boolean; o
   </View>;
 }
 
-function Metric({ label, value, unit, note, icon: Icon }: { label: string; value: string; unit?: string; note: string; icon: LucideIcon }) {
-  const { colors } = useTheme();
+function Metric({ label, value, unit, note, icon: Icon, accent = 'lilac' }: { label: string; value: string; unit?: string; note: string; icon: LucideIcon; accent?: 'blue' | 'pink' | 'lilac' }) {
+  const { colors, isDark } = useTheme();
   return <Card style={{ flex: 1, minWidth: 145, padding: 21, gap: 14 }}>
-    <View style={styles.between}><Text variant="small" muted>{label}</Text><Icon size={16} color={colors.sage} strokeWidth={1.65}/></View>
+    <View style={styles.between}><Text variant="small" muted>{label}</Text><Icon size={16} color={isDark ? colors.sage : colors[accent]} strokeWidth={1.65}/></View>
     <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 6 }}><Text style={{ fontFamily: fonts.serif, fontSize: 34, lineHeight: 40 }}>{value}</Text>{unit && <Text variant="small" muted>{unit}</Text>}</View>
     <Text variant="small" muted style={{ fontSize: 10 }}>{note}</Text>
   </Card>;
@@ -113,7 +113,7 @@ function MonthHeatmap({ sessions, date }: { sessions: BreathingSession[]; date: 
 }
 
 export function ProgressScreen({ onStart }: { onStart: () => void }) {
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
   const { width } = useWindowDimensions();
   const desktop = width >= 1080;
   const compact = width < 600;
@@ -126,7 +126,7 @@ export function ProgressScreen({ onStart }: { onStart: () => void }) {
   const selected = useMemo(() => getAnalytics(view.sessions), [view.sessions]);
   const insights = useMemo(() => getInsights(sessions), [sessions, todayKey]);
   const weeklyProgress = analytics.weekMinutes / Math.max(1, preferences.weeklyGoal);
-  const categoryColors = [colors.primary, colors.sage, '#A4B89B', '#BBB8CD', '#D6C9AC', '#C2D4D0'];
+  const categoryColors = isDark ? [colors.primary, colors.sage, '#A4B89B', '#BBB8CD', '#D6C9AC', '#C2D4D0'] : [colors.blue, colors.pink, colors.lilac, colors.sage, colors.accent, colors.subtle];
   const categories = selected.categoryBreakdown.slice(0, 5);
   const remaining = selected.categoryBreakdown.slice(5);
   const displayCategories = remaining.length ? [...categories, { category: 'Other styles', count: remaining.reduce((sum, value) => sum + value.count, 0), minutes: remaining.reduce((sum, value) => sum + value.minutes, 0), percent: remaining.reduce((sum, value) => sum + value.percent, 0) }] : categories;
@@ -143,8 +143,8 @@ export function ProgressScreen({ onStart }: { onStart: () => void }) {
 
     <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: compact ? 10 : 16 }}>
       <Metric label="Mindful minutes" value={formatNumber(selected.totalMinutes)} unit="min" note={period === 'All time' ? 'Throughout your journey' : `Across ${period.toLowerCase() === 'day' ? 'today' : `this ${period.toLowerCase() === 'week' ? 'week' : 'period'}`}`} icon={Clock3}/>
-      <Metric label="Sessions completed" value={formatNumber(selected.totalSessions)} note={`${selected.totalRounds.toLocaleString()} breathing rounds`} icon={CircleCheck}/>
-      <Metric label="Current streak" value={formatNumber(analytics.currentStreak)} unit="days" note={`Your best: ${analytics.longestStreak} days in a row`} icon={Flame}/>
+      <Metric label="Sessions completed" value={formatNumber(selected.totalSessions)} note={`${selected.totalRounds.toLocaleString()} breathing rounds`} icon={CircleCheck} accent="lilac"/>
+      <Metric label="Current streak" value={formatNumber(analytics.currentStreak)} unit="days" note={`Your best: ${analytics.longestStreak} days in a row`} icon={Flame} accent="pink"/>
       <Metric label="Average session" value={formatNumber(selected.averageMinutes)} unit="min" note={`${selected.activeDays} ${selected.activeDays === 1 ? 'day' : 'days'} with a little time for you`} icon={Leaf}/>
     </View>
 
@@ -160,13 +160,13 @@ export function ProgressScreen({ onStart }: { onStart: () => void }) {
         {!selected.totalSessions && <View style={{ padding: 17, marginTop: 12, borderRadius: 13, backgroundColor: colors.surfaceAlt }}><Text variant="small" muted>{analytics.totalSessions ? 'No sessions in this period. Every new day is a chance to begin again.' : 'Your first session will appear here. There is no rush — start when you are ready.'}</Text></View>}
       </Card>
 
-      <Card style={{ flex: desktop ? 1 : undefined, minWidth: 0, backgroundColor: colors.cream, padding: compact ? 23 : 27, justifyContent: 'space-between' }}>
-        <View><View style={styles.between}><Text variant="title">A little each week</Text><Target size={18} color={colors.sage}/></View><Text variant="small" muted style={{ marginTop: 6 }}>Make space for a steady, gentle habit.</Text></View>
+      <Card style={{ flex: desktop ? 1 : undefined, minWidth: 0, backgroundColor: isDark ? colors.cream : colors.lilacLight, borderColor: isDark ? colors.line : colors.lilacLine, padding: compact ? 23 : 27, justifyContent: 'space-between' }}>
+        <View><View style={styles.between}><Text variant="title">A little each week</Text><Target size={18} color={isDark ? colors.sage : colors.primary}/></View><Text variant="small" muted style={{ marginTop: 6 }}>Make space for a steady, gentle habit.</Text></View>
         <View style={{ alignItems: 'center', marginVertical: 24 }}>
           <ProgressRing progress={weeklyProgress} size={133} strokeWidth={9}><Text style={{ fontFamily: fonts.serif, fontSize: 30, lineHeight: 35 }}>{Math.round(weeklyProgress * 100)}%</Text><Text variant="small" muted style={{ fontSize: 10 }}>of weekly goal</Text></ProgressRing>
           <Text variant="label" style={{ marginTop: 16 }}>{formatNumber(analytics.weekMinutes)} <Text variant="small" muted>/ {preferences.weeklyGoal} minutes</Text></Text>
         </View>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingTop: 15, borderTopWidth: 1, borderTopColor: colors.line }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingTop: 15, borderTopWidth: 1, borderTopColor: isDark ? colors.line : colors.lilacLine }}>
           {weeklyProgress >= 1 ? <Check size={16} color={colors.primary}/> : <Leaf size={16} color={colors.primary}/>}
           <Text variant="small" style={{ flex: 1, color: colors.primary }}>{weeklyProgress >= 1 ? 'Your weekly goal is complete. A lovely rhythm.' : `${formatNumber(Math.max(0, preferences.weeklyGoal - analytics.weekMinutes))} more minutes to your weekly goal.`}</Text>
         </View>

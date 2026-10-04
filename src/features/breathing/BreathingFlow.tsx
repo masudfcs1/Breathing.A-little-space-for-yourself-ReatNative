@@ -227,7 +227,7 @@ function FlowContent({ exercise, onClose, onViewProgress }: BreathingFlowProps &
 
 function FlowDialog({ onClose, title, subtitle, children, wide = false, overlay = false }: { onClose: () => void; title: string; subtitle: string; children: React.ReactNode; wide?: boolean; overlay?: boolean }) {
   const { colors } = useTheme();
-  return <View style={[{ flex: 1, backgroundColor: 'rgba(20,36,27,0.42)', alignItems: 'center', justifyContent: 'center', padding: 16 }, overlay && StyleSheet.absoluteFill]}>
+  return <View style={[{ flex: 1, backgroundColor: colors.overlay, alignItems: 'center', justifyContent: 'center', padding: 16 }, overlay && StyleSheet.absoluteFill]}>
     <Pressable onPress={onClose} accessibilityLabel="Close dialog" accessibilityRole="button" style={StyleSheet.absoluteFill} />
     <View accessibilityViewIsModal style={{ width: '100%', maxWidth: wide ? 680 : 510, maxHeight: '92%', backgroundColor: colors.background, borderWidth: 1, borderColor: colors.line, borderRadius: 28, overflow: 'hidden' }}>
       <View style={{ flexDirection: 'row', paddingHorizontal: 24, paddingTop: 20, paddingBottom: 16, gap: 10, alignItems: 'flex-start' }}>
@@ -240,8 +240,8 @@ function FlowDialog({ onClose, title, subtitle, children, wide = false, overlay 
 }
 
 function PatternPreview({ pattern }: { pattern: BreathingPattern }) {
-  const { colors } = useTheme();
-  const palette = [colors.sage, '#B7C7A3', '#647E70', '#D0D9C5'];
+  const { colors, isDark } = useTheme();
+  const palette = isDark ? [colors.sage, '#B7C7A3', '#647E70', '#D0D9C5'] : [colors.blue, colors.pink, colors.lilac, colors.sage];
   return <View style={{ backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.line, borderRadius: 18, padding: 18 }}>
     <View accessibilityLabel={`Breathing pattern: ${pattern.inhale} seconds inhale, ${pattern.hold} seconds hold, ${pattern.exhale} seconds exhale, ${pattern.rest} seconds rest`} style={{ flexDirection: 'row', gap: 5, height: 36, alignItems: 'flex-end' }}>
       {(Object.keys(phaseNames) as Array<keyof BreathingPattern>).filter(phase => pattern[phase] > 0).map(phase => <View key={phase} style={{ flex: pattern[phase], backgroundColor: palette[Object.keys(phaseNames).indexOf(phase)], height: phase === 'hold' ? 36 : phase === 'rest' ? 12 : 26, borderRadius: 6 }} />)}
@@ -296,11 +296,11 @@ function CompletionScreen({ exercise, session, totalToday, streak, leftDemo, sav
   exercise: BreathingExercise; session: BreathingSession; totalToday: number; streak: number; leftDemo: boolean; saveStatus: 'saving' | 'saved' | 'error'; saveError: string;
   onRetry: () => void; onLeaveUnsaved: () => void; onDone: () => void; onAgain: () => void; onProgress: () => void;
 }) {
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
   return <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems: 'center', justifyContent: 'center', padding: 28 }}>
     <View style={{ width: '100%', maxWidth: 470, alignItems: 'center' }}>
       <View style={{ width: 82, height: 82, borderRadius: 41, backgroundColor: colors.primaryLight, alignItems: 'center', justifyContent: 'center', marginBottom: 25 }}><Leaf size={34} color={colors.primary} strokeWidth={1.2} /><View style={{ position: 'absolute', bottom: -2, right: -2, width: 28, height: 28, borderRadius: 14, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.surface }}><CheckCircle2 size={20} color={colors.primary} /></View></View>
-      <Text variant="caption" style={{ color: colors.sage }}>YOUR MOMENT, WELL SPENT</Text>
+      <Text variant="caption" style={{ color: isDark ? colors.sage : colors.primary }}>YOUR MOMENT, WELL SPENT</Text>
       <Text variant="display" style={{ textAlign: 'center', marginTop: 12 }}>Beautiful work.</Text>
       <Text muted style={{ textAlign: 'center', marginTop: 10, maxWidth: 320 }}>You made a little space for yourself.{ '\n' }Take that feeling with you.</Text>
       <Card style={{ width: '100%', marginTop: 30, padding: 24 }}>
