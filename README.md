@@ -6,6 +6,27 @@ A local-first React Native wellness application with a responsive browser previe
 
 There is no backend, account system, analytics service, or external data API. Personal practice data stays on the current device/browser unless the user exports it.
 
+## Screenshots
+
+Actual React Native Web previews in desktop and mobile browser layouts. Activity and statistics shown use the app's sample data.
+
+![Desktop home with a breathing practice overview and daily activity](docs/images/home-desktop.jpg)
+
+| Explore · Desktop | Progress · Desktop |
+| --- | --- |
+| ![Desktop Explore screen with breathing exercises](docs/images/explore-desktop.jpg) | ![Desktop Progress screen with sample practice statistics](docs/images/progress-desktop.jpg) |
+
+<table align="center">
+  <tr>
+    <th>Home · Mobile preview</th>
+    <th>Breathing session · Mobile preview</th>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/images/home-mobile.jpg" alt="Mobile home with a daily breathing practice overview" width="240"></td>
+    <td align="center"><img src="docs/images/session-mobile.jpg" alt="Mobile breathing session with the guiding orb and session controls" width="240"></td>
+  </tr>
+</table>
+
 ## Run locally
 
 Use Node.js 24, matching `.nvmrc` and CI. If you use nvm, run `nvm install` and `nvm use` in this directory.
