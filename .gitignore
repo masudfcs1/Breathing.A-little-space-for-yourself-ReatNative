@@ -1,7 +1,9 @@
 node_modules/
 dist/
+dist-native/
 .expo/
 web-build/
 *.log
 .DS_Store
 coverage/
+reports/

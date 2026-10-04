@@ -1,15 +1,17 @@
 # Breathing
 
+[![CI](https://github.com/masudfcs1/Breathing.A-little-space-for-yourself-ReatNative/actions/workflows/ci.yml/badge.svg)](https://github.com/masudfcs1/Breathing.A-little-space-for-yourself-ReatNative/actions/workflows/ci.yml)
+
 A local-first React Native wellness application with a responsive browser preview. Forest greens, warm neutrals, soft surfaces, original SVG artwork, and a gently animated breathing orb create a calm visual identity. React Native components power both the mobile and browser interfaces.
 
 There is no backend, account system, analytics service, or external data API. Personal practice data stays on the current device/browser unless the user exports it.
 
 ## Run locally
 
-Use a Node.js version supported by the installed Expo SDK and Vite; Node.js 22 LTS is a suitable starting point.
+Use Node.js 24, matching `.nvmrc` and CI. If you use nvm, run `nvm install` and `nvm use` in this directory.
 
 ```sh
-npm install
+npm ci
 npm run dev
 ```
 
@@ -35,6 +37,30 @@ npx vite preview --host 0.0.0.0
 ```
 
 The browser production output is written to `dist/`. Serve it at the root of an HTTPS origin, or localhost during development.
+
+## Continuous integration
+
+[GitHub Actions](https://github.com/masudfcs1/Breathing.A-little-space-for-yourself-ReatNative/actions/workflows/ci.yml) runs for pushes and pull requests targeting `main`, merge-queue checks, and manual runs from the Actions tab.
+
+| Check | What it verifies | Downloadable output |
+| --- | --- | --- |
+| TypeScript and unit tests | Strict TypeScript checks and the Vitest suite | JUnit test report, retained for 14 days |
+| Web production build | Vite bundle plus the HTML entry, service worker, manifest, and icon | Web distribution, retained for 7 days |
+| iOS and Android bundles | Metro resolves and exports production Hermes bundles for both native platforms | Native bundles and assets, retained for 7 days |
+
+The two build jobs run in parallel after the quality checks pass. Every job installs the committed lockfile with `npm ci`. Workflows use read-only repository permissions, commit-pinned Actions, a cached npm download store, time limits, and cancellation of superseded runs. Test reports are retained even when tests fail. Dependabot opens a weekly reviewable pull request when pinned GitHub Actions have updates.
+
+Run the same checks locally:
+
+```sh
+npm ci
+npm run typecheck
+npm run test:ci
+npm run build:web
+npm run build:native
+```
+
+Generated `reports/`, `dist/`, and `dist-native/` output is ignored by Git. Select a completed workflow run to download its artifacts. The native export checks JavaScript, assets, and Hermes compilation; it does not produce an APK/IPA, compile native projects, or run an emulator. CI requires no Expo account, signing credentials, or deployment secrets, and does not deploy the app.
 
 ## Use the app
 
