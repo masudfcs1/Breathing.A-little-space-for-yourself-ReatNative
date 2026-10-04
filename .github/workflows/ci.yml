@@ -98,7 +98,7 @@ jobs:
       - name: Upload web build
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: breathing-web-${{ github.sha }}
+          name: breathing-web-${{ github.sha }}-${{ github.run_attempt }}
           path: dist/
           if-no-files-found: error
           retention-days: 7
@@ -136,7 +136,7 @@ jobs:
       - name: Upload native bundles
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: breathing-native-bundles-${{ github.sha }}
+          name: breathing-native-bundles-${{ github.sha }}-${{ github.run_attempt }}
           path: dist-native/
           if-no-files-found: error
           retention-days: 7
